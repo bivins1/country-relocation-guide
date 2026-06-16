@@ -1,6 +1,6 @@
 import re
 import requests
-importuju likaayyy
+
 
 
 pattern=r"[A-Za-z]+([ -'][A-Za-z]+)*"
