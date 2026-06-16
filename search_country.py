@@ -1,24 +1,26 @@
 import re
 import requests
+importuju likaayyy
+
 
 pattern=r"[A-Za-z]+([ -'][A-Za-z]+)*"
 
 def country_search():
-    country = input("what is the country name: ").strip()
+    country_name = input("what is the country name: ").strip()
 
-    if not re.fullmatch(pattern, country):
+    if not re.fullmatch(pattern, country_name):
         print("invalid country name")
         return
     
     headers={'Authorization': 'Bearer rc_live_b04495913d254556bd142eeda6248825'}
-    url=f"https://api.restcountries.com/countries/v5/names.common/{country}"
+    url=f"https://api.restcountries.com/countries/v5/names.common/{country_name}"
 
     try:
-        response = requests.get(url, headers=headers)
+        response = requests.get(url, headers=headers, )
         response.raise_for_status()
         result = response.json()
 
-        country_object = result["data"]["objects"]
+        country_object = result.get("data", {}).get("objects", [])
 
         if not country_object:
             print("country selected does not exist")
@@ -51,7 +53,7 @@ def country_search():
         print(e.response.text)
 
     except requests.exceptions.RequestException as error:
-        print(f"Request error: {error}")
+        print(f"Request error: {type(error)}")
 
 country_search()
 
