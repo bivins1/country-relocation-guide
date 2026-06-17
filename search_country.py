@@ -2,7 +2,6 @@ from dotenv import load_dotenv
 from fetch_country import fetch_country
 from initialize_gemini import initialize_gemini
 
-
 load_dotenv()
 
 def country_search():
@@ -67,7 +66,9 @@ def country_search():
             print(response.text)
     except Exception as e:
         print(f"error: {e} encountered")
+
+    return
     
+
+
 country_search()
-
-

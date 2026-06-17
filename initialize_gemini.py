@@ -15,5 +15,3 @@ def initialize_gemini():
 
     client = genai.Client(api_key=api_key)
     return client
-
-client=initialize_gemini()

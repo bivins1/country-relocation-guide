@@ -3,7 +3,7 @@ import requests
 
 pattern = r"[A-Za-z]+([ -'][A-Za-z]+)*"
 
-country_choice="nigeria"
+
 def fetch_country(country_choice):
     if not re.fullmatch(pattern, country_choice):
         print("invalid country name")
@@ -31,33 +31,33 @@ def fetch_country(country_choice):
             print("country has no name")
         else:
             country_name = name.get("common", "unknown")
-        print(country_name)
+        # print(country_name)
 
-        print(country.get("population", 0))
+        # print(country.get("population", 0))
 
         capital = country.get("capitals", [])
         if capital:
             capital_name = capital[0].get("name", "unknown")
-            print(capital_name)
+            # print(capital_name)
         else:
             capital_name = "no capital"
-            print("country has no capital")
+            # print("country has no capital")
 
-        print(country.get("region", "unknown"))
+        # print(country.get("region", "unknown"))
 
         flag = country.get("flag", {}).get("emoji", "no flag")
-        print(flag)
+        # print(flag)
 
         timezone = ", ".join(country.get("timezones", []))
-        print(timezone)
+        # print(timezone)
 
         currencies = country.get("currencies", [])
         if currencies:
             currency_name = currencies[0].get("name", "unknown")
-            print(currency_name)
+            # print(currency_name)
         else:
             currency_name = "no currency"
-            print("No currency")
+            # print("No currency")
 
         country_data = f"""
 country:{country_name}
@@ -81,4 +81,3 @@ currencies:{currency_name}
         print(f"Request error: {type(error)}")
         return
     
-fetch=fetch_country(country_choice)
