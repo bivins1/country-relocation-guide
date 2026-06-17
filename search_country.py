@@ -95,7 +95,7 @@ def country_search():
         flag:{flag}
         timezone:{timezone}
         currencies:{currency_name}
-    """
+         """
 
     except requests.exceptions.HTTPError as e:
         print(f"HTTP error: {e.response.status_code}")
