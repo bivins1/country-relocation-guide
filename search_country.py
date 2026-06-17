@@ -24,14 +24,14 @@ pattern = r"[A-Za-z]+([ -'][A-Za-z]+)*"
 
 
 def country_search():
-    country_name = input("what is the country name: ").strip()
+    country_choice = input("what is the country name: ").strip()
 
-    if not re.fullmatch(pattern, country_name):
+    if not re.fullmatch(pattern, country_choice):
         print("invalid country name")
         return
 
     headers = {"Authorization": "Bearer rc_live_b04495913d254556bd142eeda6248825"}
-    url = f"https://api.restcountries.com/countries/v5/names.common/{country_name}"
+    url = f"https://api.restcountries.com/countries/v5/names.common/{country_choice}"
 
     country_data=""
 
@@ -51,52 +51,65 @@ def country_search():
 
         country = country_object[0]
 
-        print(country.get("names", {}).get("common", "unknown"))
+        name=country.get("names", {})
+        if not name:
+            country_name="country name does not exist"
+            print("country has no name")
+        else: 
+            country_name=name.get("common", "unknown")
+        print(country_name)
+
         print(country.get("population", 0))
 
         capital = country.get("capitals", [])
         if capital:
-            print(capital[0].get("name", "unknown"))
+            capital_name=capital[0].get("name", "unknown")
+            print(capital_name)
         else:
+            capital_name="no capital"
             print("country has no capital")
 
         print(country.get("region", "unknown"))
-        print(country.get("flag", {}).get("emoji", "no flag"))
 
-        print(", ".join(country.get("timezones", [])))
+        flag=country.get("flag", {}).get("emoji", "no flag")
+        print(flag)
+
+        timezone= ", ".join(country.get("timezones", []))   
+        print(timezone)
 
         currencies = country.get("currencies", [])
         if currencies:
-            print(currencies[0].get("name", "unknown"))
+            currency_name=currencies[0].get("name", "unknown")
+            print(currency_name)
         else:
+            currency_name="no currency"
             print("No currency")
 
 
         country_data=f"""
 
-          country:{country.get("names", {}).get("common", "unknown")}
-          population:{country.get("population", 0)}
-          capital:{country.get("capitals", [])[0].get("name", "unknown")}
-          region:{country.get("region", "unknown")}
-          flag:{country.get("flag", {}).get("emoji", "no flag")}
-          timezone:{", ".join(country.get("timezones", []))}
-          currencies:{country.get("currencies", [])[0].get("name", "unknown")}
+        country:{country_name}
+        population:{country.get("population", 0)}
+        capital: {capital_name}
+        region:{country.get("region", "unknown")}
+        flag:{flag}
+        timezone:{timezone}
+        currencies:{currency_name}
     """
 
     except requests.exceptions.HTTPError as e:
         print(f"HTTP error: {e.response.status_code}")
         print(e.response.text)
+        return
 
     except requests.exceptions.RequestException as error:
         print(f"Request error: {type(error)}")
+        return
 
-
-
-    country_data
 
     prompt1=f"""
 
-    you are a travel and relocation assistant.
+    you are a vacation assistant.
 
     generate a simple travel guide for people looking to have a vacation using the provided country data.
 
@@ -108,14 +121,12 @@ def country_search():
 
     this is the provided country data:
     {country_data}
-
-
 """
     prompt2=f"""
 
-    you are a travel and relocation assistant.
+    you are a  relocation assistant.
 
-    generate a simple travel guide for people looking to have a relocate using the provided country data.
+    generate a simple travel guide for people looking to relocate using the provided country data.
 
     use this structure when providing your answer:
     -overview
@@ -131,24 +142,27 @@ def country_search():
     
     user_choice=input("please choose one, VACATION OR RELOCATION:").strip()
 
-    if user_choice.lower() == "":
-        print("no choice made cannot proceed. please make a choice.")
-        return
-    elif user_choice.lower() == "vacation":
-        response = client.models.generate_content(
-            model="gemini-3.5-flash", 
-            contents=F"{prompt1}"
+    try:
+        if not user_choice:
+            print("no choice made cannot proceed. please make a choice.")
+            return
+        elif  not (user_choice.lower()=="vacation" or user_choice.lower()=="relocation"):
+            print("invalid option")
+        elif user_choice.lower() == "vacation":
+            response = client.models.generate_content(
+                model="gemini-3.5-flash", 
+                contents=f"{prompt1}"
+            )
+            print(response.text)
+        elif user_choice.lower() == "relocation":
+            response = client.models.generate_content(
+            model="gemini-3.5-flash",
+            contents=f"{prompt2}"
         )
-        print(response.text)
-    elif user_choice.lower() == "relocation":
-        response = client.models.generate_content(
-        model="gemini-3.5-flash",
-        contents=F"{prompt2}"
-    )
-        print(response.text)
-        
+            print(response.text)
+    except Exception as e:
+        print(f"error: {e} encountered")
     
-
 country_search()
 
 
