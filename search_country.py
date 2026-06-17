@@ -1,22 +1,16 @@
-from google import genai
 from dotenv import load_dotenv
-import os
 from fetch_country import fetch_country
+from initialize_gemini import initialize_gemini
+
 
 load_dotenv()
-api_key = os.getenv("API_KEY")
-
-if not api_key:
-    raise ValueError("api key not found")
-
-print(f"key loaded successfully {api_key [:4]}")
-
-client = genai.Client(api_key=api_key)
 
 def country_search():
     country_choice = input("what is the country name: ").strip()
 
     country_data=fetch_country(country_choice)
+
+    client=initialize_gemini()
 
     prompt1=f"""
 

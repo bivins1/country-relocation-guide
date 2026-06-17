@@ -3,7 +3,7 @@ import requests
 
 pattern = r"[A-Za-z]+([ -'][A-Za-z]+)*"
 
-
+country_choice="nigeria"
 def fetch_country(country_choice):
     if not re.fullmatch(pattern, country_choice):
         print("invalid country name")
@@ -68,8 +68,9 @@ flag:{flag}
 timezone:{timezone}
 currencies:{currency_name}
 """
-
+        print(country_data)
         return country_data
+        
 
     except requests.exceptions.HTTPError as e:
         print(f"HTTP error: {e.response.status_code}")
@@ -79,3 +80,5 @@ currencies:{currency_name}
     except requests.exceptions.RequestException as error:
         print(f"Request error: {type(error)}")
         return
+    
+fetch=fetch_country(country_choice)
