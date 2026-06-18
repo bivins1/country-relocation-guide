@@ -43,8 +43,8 @@ def country_search():
     try:
         guide_result = generate_country_guide(client, country_data, user_choice)
         print(guide_result)
+        return guide_result
     except Exception as e:
         print(f"Error: {e} encountered during guide generation.")
-
 
 country_search()
