@@ -73,7 +73,7 @@ flag:{flag}
 timezone:{timezone}
 currencies:{currency_name}
 """
-        print(country_data)
+        # print(country_data)
         return country_data
         
 
