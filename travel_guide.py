@@ -24,18 +24,21 @@ def travel_guide():
     this is the provided country data:
     {country_data}
 """
-    response="no response please try again"
+    response_text="no response please try again"
 
     try:
         response = client.models.generate_content(
                     model="gemini-3.5-flash", 
                     contents=f"{prompt}"
                 )
-        print(response.text)
+        response_text=response.text
+        print(response_text)
+
+        
     except Exception as e:
         print(f"error occurred: {e}")
 
-    return response.text
+    return response_text
 
 travel_guide()
 

@@ -26,6 +26,7 @@ def fetch_country(country_choice):
 
         if not country_object:
             print("country selected does not exist")
+
             return
 
         country = country_object[0]
