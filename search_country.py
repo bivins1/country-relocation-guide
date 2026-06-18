@@ -8,6 +8,9 @@ def country_search():
     country_choice = input("what is the country name: ").strip()
 
     country_data=fetch_country(country_choice)
+    if not country_data:
+        print("no country data")
+        return
     print(country_data)
 
     client=initialize_gemini()
