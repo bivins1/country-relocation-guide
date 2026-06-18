@@ -11,7 +11,6 @@ def initialize_gemini():
     if not api_key:
         raise ValueError("api key not found")
 
-    print(f"key loaded successfully {api_key [:4]}")
 
     client = genai.Client(api_key=api_key)
     return client
