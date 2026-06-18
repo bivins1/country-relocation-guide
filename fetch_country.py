@@ -1,6 +1,10 @@
 import re
 import requests
+from dotenv import load_dotenv
+import os
 
+
+load_dotenv()
 pattern = r"[A-Za-z]+([ -'][A-Za-z]+)*"
 
 
@@ -8,8 +12,9 @@ def fetch_country(country_choice):
     if not re.fullmatch(pattern, country_choice):
         print("invalid country name")
         return
-
-    headers = {"Authorization": "Bearer rc_live_b04495913d254556bd142eeda6248825"}
+    
+    rest_api=os.getenv("REST_API")
+    headers = {"Authorization": rest_api}
     url = f"https://api.restcountries.com/countries/v5/names.common/{country_choice}"
 
     try:
