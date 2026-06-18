@@ -37,6 +37,7 @@ def travel_checklist():
 
 """
     response_text="no response please try again"
+    print(f"\n--- Generating travel checklist---\n")
 
     try:
         response = client.models.generate_content(
