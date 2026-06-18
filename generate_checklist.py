@@ -3,11 +3,10 @@ from initialize_gemini import initialize_gemini
 
 def travel_checklist():
 
-    user_choice=input("what country:").strip()
+    user_choice=input("what is the country name:").strip()
 
     country_data=fetch_country(user_choice)
     if not country_data:
-        print("no country data")
         return
 
     try:
@@ -17,21 +16,28 @@ def travel_checklist():
         return
 
     prompt= f"""
-    you are a travel assistant
+    You are a travel assistant.
 
-    using the provided country data generate a simple and concise travel preparation checklist and travel guide for customers looking for relocation
+    Using the provided country data, generate a simple, practical, and concise travel preparation checklist for someone planning to either visit or relocate to the country.
 
-    your output should include:
-    documents needed
-    health precautions
-    travel tips
-    currency readiness
-    safety reminders
+    Your response should include the following sections:
 
-    this is the provided country data:
-    {country_data}
+    Required Documents (e.g., passport, visa, permits if applicable)
+    Health Precautions (recommended vaccinations, health advice, or travel insurance)
+    Currency & Payment Readiness (local currency, common payment methods, and useful financial tips)
+    Safety Reminders (important safety advice and emergency considerations)
+    Packing & Travel Tips (weather-appropriate clothing, essential items, and transportation tips)
+    Local Customs & Important Regulations (basic cultural etiquette, important laws, or customs visitors should know)
+
+    Keep the checklist easy to read by using bullet points. Tailor your recommendations to the specific country using the provided information, and avoid including information that is uncertain or unsupported by the country data.
+
+    This is the provided country data:
+
+{country_data}
+
 """
     response_text="no response please try again"
+    print(f"\n--- Generating travel checklist---\n")
 
     try:
         response = client.models.generate_content(
@@ -48,4 +54,5 @@ def travel_checklist():
     return response_text
 
 
+travel_checklist()
 

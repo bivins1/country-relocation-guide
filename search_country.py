@@ -17,6 +17,8 @@ def country_search():
     country_data = fetch_country(country_choice)
     if not country_data:
         return # fetch_country already prints the error message
+    else:
+        print(country_data)
 
     # 3. Initialize AI
     try:
