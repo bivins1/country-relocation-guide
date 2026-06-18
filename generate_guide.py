@@ -3,7 +3,6 @@ def generate_country_guide(client, country_data, guide_type):
     Generates a simple, easy-to-read guide using Gemini AI based on the user's choice.
     """
     
-    # 1. Define the prompts based on the user's choice
     if guide_type == "vacation":
         prompt = f"""
         You are a vacation assistant.
@@ -50,10 +49,9 @@ def generate_country_guide(client, country_data, guide_type):
     else:
         return "Invalid guide type provided."
 
-    # 2. Send the prompt to Gemini AI
     try:
         response = client.models.generate_content(
-            model="gemini-2.5-flash", 
+            model="gemini-3.5-flash", 
             contents=prompt
         )
         return response.text
