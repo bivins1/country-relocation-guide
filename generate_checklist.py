@@ -5,6 +5,10 @@ def travel_checklist():
 
     user_choice=input("what is the country name:").strip()
 
+    travel_type=input("VACATION OR RELOCATION").strip().lower()
+
+
+
     country_data=fetch_country(user_choice)
     if not country_data:
         return
@@ -15,34 +19,39 @@ def travel_checklist():
         print(f"Failed to initialize AI: {e}")
         return
 
-    prompt= f"""
+    prompt = f"""
     You are a travel assistant.
 
-    Using the provided country data, generate a simple, practical, and concise travel preparation checklist for someone planning to either visit or relocate to the country.
+    The user is travelling to {user_choice} for {travel_type}.
 
-    Your response should include the following sections:
+    Using the provided country data, generate a simple, practical, and beginner-friendly travel checklist.
 
-    Required Documents (e.g., passport, visa, permits if applicable)
-    Health Precautions (recommended vaccinations, health advice, or travel insurance)
-    Currency & Payment Readiness (local currency, common payment methods, and useful financial tips)
-    Safety Reminders (important safety advice and emergency considerations)
-    Packing & Travel Tips (weather-appropriate clothing, essential items, and transportation tips)
-    Local Customs & Important Regulations (basic cultural etiquette, important laws, or customs visitors should know)
+    Your checklist should include:
 
-    Keep the checklist easy to read by using bullet points. Tailor your recommendations to the specific country using the provided information, and avoid including information that is uncertain or unsupported by the country data.
+    Required travel documents
+    Health precautions
+    Currency and payment readiness
+    Packing recommendations
+    Safety reminders
+    Important travel tips specific to a {travel_type}
+
+    Keep the checklist concise, organized, and easy to follow.
 
     This is the provided country data:
 
-{country_data}
-
-"""
+    {country_data}
+    """
     response_text="no response please try again"
+
+    
     print(f"\n--- Generating travel checklist---\n")
+
+    response_text=""
 
     try:
         response = client.models.generate_content(
                     model="gemini-3.5-flash", 
-                    contents={prompt}
+                    contents=prompt
                 )
         response_text=response.text
         print(response_text)
@@ -51,7 +60,24 @@ def travel_checklist():
     except Exception as e:
         print(f"error occurred: {e}")
 
-    return response_text
+    save_checklist=input("Do you want to save checklist, (YES/NO): ").strip().lower()
+
+    if not save_checklist:
+        print("no choice made, exiting...")
+        return
+    
+    elif save_checklist not in ["yes", "no"]:
+        print("invalid choice, exiting....")
+        return
+    
+    elif save_checklist=="no":
+        print("okay, checklist discarded. Exiting ....")
+        return
+    
+    elif save_checklist =="yes":
+        save_guide(response_text)
+        return
+
 
 
 travel_checklist()
