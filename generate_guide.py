@@ -1,6 +1,6 @@
 def generate_country_guide(client, country_data, guide_type):
     """
-    Generates a simple, easy-to-read guide using Gemini AI based on the user's choice.
+    Generates a simple, easy to read guide using Gemini AI based on the user's choice.
     """
     
     if guide_type == "vacation":
@@ -8,10 +8,10 @@ def generate_country_guide(client, country_data, guide_type):
         You are a vacation assistant.
         Generate a simple travel guide for people looking to have a vacation using the provided country data.
         Use this structure when providing your answer:
-        - Overview
-        - Culture
-        - Country Landmarks
-        - Travel Tips
+        Overview
+        Culture
+        Country Landmarks
+        Travel Tips
 
         This is the provided country data:
         {country_data}
@@ -22,11 +22,11 @@ def generate_country_guide(client, country_data, guide_type):
         You are a relocation assistant.
         Generate a simple travel guide for people looking to relocate using the provided country data.
         Use this structure when providing your answer:
-        - Overview
-        - Cost of Living
-        - Culture
-        - Security
-        - Travel Tips
+        Overview
+        Cost of Living
+        Culture
+        Security
+        Travel Tips
 
         This is the provided country data:
         {country_data}
@@ -37,11 +37,11 @@ def generate_country_guide(client, country_data, guide_type):
         You are an international student advisor.
         Generate a simple guide for people looking to study abroad using the provided country data.
         Use this structure when providing your answer:
-        - Overview
-        - Education System
-        - Culture
-        - Cost of Living for Students
-        - Travel & Visa Tips
+        Overview
+        Education System
+        Culture
+        Cost of Living for Students
+        Travel & Visa Tips
 
         This is the provided country data:
         {country_data}
