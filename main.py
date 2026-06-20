@@ -2,35 +2,49 @@ from search_country import country_search
 from generate_checklist import travel_checklist
 from compare_country import compare_countries
 
+
 def main():
 
-    print("WELCOME TO COUNTRY RELOCATION GUIDE, we provide you with country relocation guides\n country vacation guides\n country study guides.\n We also help you with your tavel checklist depending on the occasion and help you compare countries to halp facilitate your decision making  ")
+    while True:
 
-    print("1. search country and generate relevant guide\n")
-    print("2. generate travel checklist\n")
-    print("3. compare countries\n")
+        print("\n" + "=" * 55)
+        print("           COUNTRY RELOCATION GUIDE")
+        print("=" * 55)
 
-    user_option=input("please choose an option:").strip().lower()
+        print("\nYour AI assistant for:")
+        print("• Country vacation guides")
+        print("• Country relocation guides")
+        print("• Study abroad guides")
+        print("• Personalized travel checklists")
+        print("• Side-by-side country comparisons")
 
-    
-    if user_option == "1":
-       country_search()
+        print("\nPlease choose an option:\n")
+        print("1. Search a country and generate a guide")
+        print("2. Generate a travel checklist")
+        print("3. Compare two countries")
+        print("4. Exit")
 
-    if user_option=="2":
-        travel_checklist()
+        user_option = input("\nEnter your choice: ").strip()
 
-    if user_option == "3":
-        compare_countries()
+        if user_option == "1":
+            country_search()
 
-    else:
-        print("invalid option, please choose 1, 2 or 3")
-        return
-    
+        elif user_option == "2":
+            travel_checklist()
+
+        elif user_option == "3":
+            compare_countries()
+
+        elif user_option == "4":
+            print("\nThank you for using Country Relocation Guide.")
+            print("Safe travels and best wishes on your journey! 🌍")
+            break
+
+        else:
+            print("\nInvalid option. Please choose 1, 2, 3, or 4.")
+
+        input("\nPress Enter to return to the main menu...")
+
 
 if __name__ == "__main__":
     main()
-
-
-    
-
-
