@@ -1,5 +1,6 @@
 from fetch_country import fetch_country
 from initialize_gemini import initialize_gemini
+from save_guide import save_guide
 
 
 def travel_checklist():
@@ -55,7 +56,8 @@ def travel_checklist():
             model="gemini-3.5-flash",
             contents=prompt
         )
-        response_text = response.text
+        # Ensure response_text is always a string (response.text may be None)
+        response_text = response.text or ""
         print(response_text)
 
     except Exception as e:
@@ -67,7 +69,8 @@ def travel_checklist():
 
 
     if save_checklist == "yes":
-        save_guide(response_text)
+        filename=f"{user_choice}.txt"
+        save_guide(response_text, filename)
 
     elif save_checklist == "no":
         print("Checklist discarded.")
