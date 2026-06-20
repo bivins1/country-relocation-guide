@@ -1,14 +1,35 @@
-def compare_country(country1, country2):
-    if country1['population'] > country2['population']:
-        return f"{country1['name']} population is larger than {country2['name']}."
-    elif country1['population'] < country2['population']:
-        return f"{country2['name']} population is larger than {country1['name']}."
-    else:
-        return f"{country1['name']} and {country2['name']} have the same population."
-    
-    return {
-        'population': 'population_result',
-        'currency': f'{country1["currency"]} vs {country2["currency"]}',
-        'language': f'{country1["language"]} vs {country2["language"]}',
-        'area': f'{country1["area"]} vs {country2["area"]}',
-        }
+from google.generativeai import genai
+from fetch_country import fetch_country 
+from initialize_gemini import GEMINI_API_KEY
+
+def compare_countries(country1_name, country2_name):
+
+    country1 = fetch_country(country1_name)
+    country2 = fetch_country(country2_name)
+
+    prompt = f"""
+    Compare the following countries.
+
+    Country 1:
+    {country1}
+
+    Country 2:
+    {country2}
+
+    Give:
+    1. Overview
+    2. Similarities
+    3. Differences
+    4. Travel comparison
+    5. Study comparison
+    6. Relocation comparison
+    7. Final recommendation
+
+    Keep the response concise and professional.
+    """
+
+    model = genai.GenerativeModel("gemini-2.0-flash")
+
+    response = model.generate_content(prompt)
+
+    return response.text
