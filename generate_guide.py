@@ -1,4 +1,4 @@
-def generate_country_guide(client, country_data, guide_type):
+def generate_country_guide(client, country_data, guide_type)-> str:
     """
     Generates a simple, easy to read guide using Gemini AI based on the user's choice.
     """
@@ -54,6 +54,6 @@ def generate_country_guide(client, country_data, guide_type):
             model="gemini-3.5-flash", 
             contents=prompt
         )
-        return response.text
+        return response.text or ""
     except Exception as e:
         return f"Error generating the guide: {e}"

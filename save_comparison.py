@@ -1,10 +1,10 @@
 from pathlib import Path
 
-def save_guide(content: str, filename: str) :
-    folder = Path("saved_guides")
+def save_comparison(content: str, filename: str):
+    folder = Path("saved_comparisons")
     folder.mkdir(exist_ok=True)
 
     file_path = folder / filename
     file_path.write_text(content, encoding="utf-8")
-    print("Guide saved successfully")
-    return 
+
+    print("Comparison saved successfully.")

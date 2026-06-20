@@ -1,6 +1,6 @@
 from fetch_country import fetch_country
 from initialize_gemini import initialize_gemini
-from save_guide import save_guide
+from save_checklist import save_checklist
 
 
 def travel_checklist():
@@ -65,18 +65,17 @@ def travel_checklist():
         return
 
 
-    save_checklist = input("Do you want to save checklist? (yes/no): ").strip().lower()
+    save_choice = input("Do you want to save checklist? (yes/no): ").strip().lower()
 
 
-    if save_checklist == "yes":
+    if save_choice == "yes":
         filename=f"{user_choice}.txt"
-        save_guide(response_text, filename)
+        save_checklist(response_text, filename)
 
-    elif save_checklist == "no":
+    elif save_choice == "no":
         print("Checklist discarded.")
 
     else:
         print("Invalid choice. Exiting.")
 
 
-travel_checklist()
