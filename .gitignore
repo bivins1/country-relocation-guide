@@ -17,3 +17,9 @@ __pycache__/
 
 # Windows
 Thumbs.db
+
+#pdf
+*.pdf
+
+#txt
+*.txt
