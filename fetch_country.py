@@ -3,12 +3,14 @@ import requests
 from dotenv import load_dotenv
 import os
 
+from country import Country
+
 load_dotenv()
 
 pattern = r"[A-Za-z]+([ -'][A-Za-z]+)*"
 
 
-def fetch_country(country_choice: str) -> str | None:
+def fetch_country(country_choice: str) -> Country | None:
     if not re.fullmatch(pattern, country_choice):
         print("invalid country name")
         return None
@@ -58,15 +60,15 @@ def fetch_country(country_choice: str) -> str | None:
         else:
             currency_name = "no currency"
 
-        country_data = f"""
-country: {country_name}
-population: {country.get("population", 0)}
-capital: {capital_name}
-region: {country.get("region", "unknown")}
-flag: {flag}
-timezone: {timezone}
-currencies: {currency_name}
-"""
+        country_data = Country(
+            name=country_name,
+            population=country.get("population", 0),
+            capital=capital_name,
+            region=country.get("region", "unknown"),
+            flag=flag,
+            timezone=timezone,
+            currency=currency_name,
+        )
 
         return country_data
 
