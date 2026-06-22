@@ -3,18 +3,23 @@ import requests
 from dotenv import load_dotenv
 import os
 
-
 load_dotenv()
+
 pattern = r"[A-Za-z]+([ -'][A-Za-z]+)*"
 
 
-def fetch_country(country_choice):
+def fetch_country(country_choice: str) -> str | None:
     if not re.fullmatch(pattern, country_choice):
         print("invalid country name")
-        return
-    
-    rest_api=os.getenv("REST_API")
+        return None
+
+    rest_api = os.getenv("REST_API")
+
+    if rest_api is None:
+        raise ValueError("REST_API environment variable is not set")
+
     headers = {"Authorization": rest_api}
+
     url = f"https://api.restcountries.com/countries/v5/names.common/{country_choice}"
 
     try:
@@ -26,7 +31,7 @@ def fetch_country(country_choice):
 
         if not country_object:
             print("country selected does not exist")
-            return
+            return None
 
         country = country_object[0]
 
@@ -36,52 +41,43 @@ def fetch_country(country_choice):
             print("country has no name")
         else:
             country_name = name.get("common", "unknown")
-        # print(country_name)
-
-        # print(country.get("population", 0))
 
         capital = country.get("capitals", [])
         if capital:
             capital_name = capital[0].get("name", "unknown")
-            # print(capital_name)
         else:
             capital_name = "no capital"
-            # print("country has no capital")
-
-        # print(country.get("region", "unknown"))
 
         flag = country.get("flag", {}).get("emoji", "no flag")
-        # print(flag)
 
         timezone = ", ".join(country.get("timezones", []))
-        # print(timezone)
 
         currencies = country.get("currencies", [])
         if currencies:
             currency_name = currencies[0].get("name", "unknown")
-            # print(currency_name)
         else:
             currency_name = "no currency"
-            # print("No currency")
 
         country_data = f"""
-country:{country_name}
-population:{country.get("population", 0)}
-capital:{capital_name}
-region:{country.get("region", "unknown")}
-flag:{flag}
-timezone:{timezone}
-currencies:{currency_name}
+country: {country_name}
+population: {country.get("population", 0)}
+capital: {capital_name}
+region: {country.get("region", "unknown")}
+flag: {flag}
+timezone: {timezone}
+currencies: {currency_name}
 """
+
         return country_data
-        
 
     except requests.exceptions.HTTPError as e:
-        print(f"HTTP error: {e.response.status_code}")
-        print(e.response.text)
-        return
+        if e.response is not None:
+            print(f"HTTP error: {e.response.status_code}")
+            print(e.response.text)
+        else:
+            print("HTTP error occurred but no response object")
+        return None
 
     except requests.exceptions.RequestException as error:
         print(f"Request error: {type(error)}")
-        return
-    
+        return None
