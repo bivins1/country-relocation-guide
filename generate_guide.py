@@ -1,8 +1,8 @@
-def generate_country_guide(client, country_data, guide_type)-> str:
+def generate_country_guide(client, country_data, guide_type) -> str:
     """
     Generates a simple, easy to read guide using Gemini AI based on the user's choice.
     """
-    
+
     if guide_type == "vacation":
         prompt = f"""
         You are a vacation assistant.
@@ -16,7 +16,7 @@ def generate_country_guide(client, country_data, guide_type)-> str:
         This is the provided country data:
         {country_data}
         """
-        
+
     elif guide_type == "relocation":
         prompt = f"""
         You are a relocation assistant.
@@ -31,7 +31,7 @@ def generate_country_guide(client, country_data, guide_type)-> str:
         This is the provided country data:
         {country_data}
         """
-        
+
     elif guide_type == "study":
         prompt = f"""
         You are an international student advisor.
@@ -46,14 +46,20 @@ def generate_country_guide(client, country_data, guide_type)-> str:
         This is the provided country data:
         {country_data}
         """
+
     else:
-        return "Invalid guide type provided."
+        raise ValueError("Invalid guide type provided.")
 
     try:
         response = client.models.generate_content(
-            model="gemini-3.5-flash", 
+            model="gemini-3.5-flash",
             contents=prompt
         )
-        return response.text or ""
+
+        if not response.text:
+            raise RuntimeError("Gemini returned an empty response.")
+
+        return response.text
+
     except Exception as e:
-        return f"Error generating the guide: {e}"
+        raise RuntimeError(f"Error generating the guide: {e}") from e
