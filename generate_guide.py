@@ -34,19 +34,27 @@ def generate_country_guide(client, country_data, guide_type) -> str:
 
     elif guide_type == "study":
         prompt = f"""
-        You are an international student advisor.
-        Generate a simple guide for people looking to study abroad using the provided country data.
-        Use this structure when providing your answer:
-        Overview
-        Education System
-        Culture
-        Cost of Living for Students
-        Travel & Visa Tips
+        You are an expert international student advisor.
 
-        This is the provided country data:
+        Generate a STUDY GUIDE for international students who want to study in this country.
+
+        IMPORTANT: Focus ONLY on education and student life.
+
+        Use this structure:
+
+        1. Education System Overview
+        2. Top Universities & Admission Requirements
+        3. Tuition Fees & Cost of Living
+        4. Scholarships & Financial Aid
+        5. Student Visa Requirements
+        6. Student Life & Culture
+        7. Final Advice for International Students
+
+        Keep it simple, practical, and easy to understand.
+
+        Country data:
         {country_data}
         """
-
     else:
         raise ValueError("Invalid guide type provided.")
 

@@ -1,11 +1,12 @@
 from pathlib import Path
 
-def save_checklist(content: str, filename: str) :
+
+def save_checklist(content: str, country_name: str):
     folder = Path("saved_checklist")
     folder.mkdir(exist_ok=True)
 
+    filename = f"{country_name}_checklist.txt"
     file_path = folder / filename
     file_path.write_text(content, encoding="utf-8")
-    print("checklist saved successfully")
-    return
-   
+
+    return file_path
