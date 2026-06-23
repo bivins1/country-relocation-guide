@@ -1,4 +1,5 @@
 import streamlit as st
+from pathlib import Path
 
 from fetch_country import fetch_country
 from generate_guide import generate_country_guide
@@ -12,14 +13,13 @@ from save_comparison import save_comparison
 
 
 # =====================================================
-# PAGE CONFIG
+# CONFIG
 # =====================================================
 
 st.set_page_config(
     page_title="Country Relocation Guide",
     page_icon="🌍",
-    layout="centered",
-    initial_sidebar_state="expanded"
+    layout="centered"
 )
 
 
@@ -27,50 +27,52 @@ st.set_page_config(
 # HEADER
 # =====================================================
 
-st.markdown(
-    """
-    <div style='text-align:center'>
-        <h1 style='color:#2E86AB;'>🌍 Country Relocation Guide</h1>
-        <p style='font-size:18px;color:gray;'>
-        AI-powered Travel • Study • Relocation Assistant
-        </p>
-    </div>
-    """,
-    unsafe_allow_html=True,
-)
-
-st.markdown("---")
-
-st.markdown(
-    """
-    <div style="
-        background:#111;
-        padding:12px;
-        border-radius:10px;
-        font-family:monospace;
-        color:#00ff88;
-    ">
-    SYSTEM READY → Choose a feature from the sidebar.
-    </div>
-    """,
-    unsafe_allow_html=True,
-)
-
-st.markdown("---")
+st.title("🌍 Country Relocation Guide")
 
 
 # =====================================================
-# SIDEBAR NAVIGATION
+# SIDEBAR
 # =====================================================
 
 option = st.sidebar.selectbox(
     "Navigation",
-    [
-        "Country Guide",
-        "Travel Checklist",
-        "Compare Countries",
-    ],
+    ["Country Guide", "Travel Checklist", "Compare Countries", "Saved Files"]
 )
+
+
+# =====================================================
+# HELPERS
+# =====================================================
+
+def show_files(folder_path: str, title: str):
+
+    st.subheader(title)
+
+    folder = Path(folder_path)
+
+    if not folder.exists():
+        st.info("No files found.")
+        return
+
+    files = list(folder.glob("*.txt"))
+
+    if not files:
+        st.info("No saved files yet.")
+        return
+
+    for file in files:
+        with st.expander(file.name):
+
+            content = file.read_text(encoding="utf-8")
+
+            st.write(content)
+
+            st.download_button(
+                "⬇ Download",
+                content,
+                file_name=file.name,
+                mime="text/plain"
+            )
 
 
 # =====================================================
@@ -79,127 +81,83 @@ option = st.sidebar.selectbox(
 
 if option == "Country Guide":
 
-    st.markdown("### 📍 Country Guide Generator")
-
-    country = st.text_input("Enter country name")
-    guide_type = st.selectbox("Guide Type", ["vacation", "relocation", "study"])
+    country = st.text_input("Enter country")
+    guide_type = st.selectbox("Type", ["vacation", "relocation", "study"])
 
     if st.button("Generate Guide"):
 
-        if not country:
-            st.warning("Please enter a country.")
-        else:
-            try:
-                data = fetch_country(country)
+        if country:
+            data = fetch_country(country)
+            client = initialize_gemini()
 
-                if not data:
-                    st.error("Country not found.")
-                else:
-                    client = initialize_gemini()
+            guide = generate_country_guide(client, data, guide_type)
 
-                    guide = generate_country_guide(
-                        client,
-                        data,
-                        guide_type,
-                    )
+            st.session_state.guide = {
+                "country": country,
+                "type": guide_type,
+                "content": guide
+            }
 
-                    st.session_state.latest_guide = {
-                        "country": country,
-                        "guide_type": guide_type,
-                        "content": guide
-                    }
+    if "guide" in st.session_state:
 
-            except Exception as e:
-                st.error(f"Error: {e}")
+        g = st.session_state.guide
 
-
-    if "latest_guide" in st.session_state:
-
-        guide = st.session_state.latest_guide
-
-        st.success("Guide generated successfully!")
-        st.write(guide["content"])
-
-        st.info(
-            "⚠️ Important: Download your guide to keep a permanent copy. "
-            "Server storage may reset on restart or redeploy."
-        )
+        st.write(g["content"])
 
         col1, col2 = st.columns(2)
 
         with col1:
             if st.button("💾 Save Guide"):
-                path = save_guide(
-                    guide["content"],
-                    guide["country"],
-                    guide["guide_type"]
-                )
+                path = save_guide(g["content"], g["country"], g["type"])
                 st.success(f"Saved successfully at: {path}")
 
         with col2:
             st.download_button(
                 "⬇ Download Guide",
-                guide["content"],
-                file_name=f"{guide['country']}_{guide['guide_type']}_guide.txt",
+                g["content"],
+                file_name=f"{g['country']}_{g['type']}.txt",
                 mime="text/plain"
             )
 
 
 # =====================================================
-# TRAVEL CHECKLIST
+# CHECKLIST
 # =====================================================
 
 elif option == "Travel Checklist":
 
-    st.markdown("### 🧳 Travel Checklist Generator")
-
-    country = st.text_input("Enter country name", key="checklist_country")
-    travel_type = st.selectbox("Purpose", ["vacation", "relocation"])
+    country = st.text_input("Country", key="c1")
+    ttype = st.selectbox("Purpose", ["vacation", "relocation"])
 
     if st.button("Generate Checklist"):
 
-        if not country:
-            st.warning("Please enter a country.")
-        else:
-            try:
-                checklist = travel_checklist(country, travel_type)
+        if country:
+            checklist = travel_checklist(country, ttype)
 
-                st.session_state.latest_checklist = {
-                    "country": country,
-                    "travel_type": travel_type,
-                    "content": checklist
-                }
+            st.session_state.checklist = {
+                "country": country,
+                "type": ttype,
+                "content": checklist
+            }
 
-            except Exception as e:
-                st.error(e)
+    if "checklist" in st.session_state:
 
+        c = st.session_state.checklist
 
-    if "latest_checklist" in st.session_state:
-
-        checklist = st.session_state.latest_checklist
-
-        st.success("Checklist generated successfully!")
-        st.write(checklist["content"])
-
-        st.info(
-            "⚠️ Important: Download your checklist to avoid losing it if the app resets."
-        )
+        st.write(c["content"])
 
         col1, col2 = st.columns(2)
 
         with col1:
             if st.button("💾 Save Checklist"):
-                path = save_checklist(
-                    checklist["content"],
-                    checklist["country"]
-                )
+                path = save_checklist(c["content"], c["country"])
                 st.success(f"Saved successfully at: {path}")
 
         with col2:
             st.download_button(
                 "⬇ Download Checklist",
-                checklist["content"],
-                file_name=f"{checklist['country']}_{checklist['travel_type']}_checklist.txt",
+                c["content"],
+                file_name=f"{c['country']}_{c['type']}_checklist.txt",
                 mime="text/plain"
             )
 
@@ -210,60 +168,54 @@ elif option == "Travel Checklist":
 
 elif option == "Compare Countries":
 
-    st.markdown("### ⚖️ Compare Countries")
+    c1 = st.text_input("Country 1")
+    c2 = st.text_input("Country 2")
 
-    col1, col2 = st.columns(2)
+    if st.button("Compare"):
 
-    with col1:
-        country1 = st.text_input("First Country")
+        if c1 and c2:
+            result = compare_countries(c1, c2)
 
-    with col2:
-        country2 = st.text_input("Second Country")
+            st.session_state.compare = {
+                "c1": c1,
+                "c2": c2,
+                "content": result
+            }
 
-    if st.button("Compare Countries"):
+    if "compare" in st.session_state:
 
-        if not country1 or not country2:
-            st.warning("Please enter both countries.")
-        else:
-            try:
-                comparison = compare_countries(country1, country2)
+        cmp = st.session_state.compare
 
-                st.session_state.latest_comparison = {
-                    "country1": country1,
-                    "country2": country2,
-                    "content": comparison
-                }
-
-            except Exception as e:
-                st.error(e)
-
-
-    if "latest_comparison" in st.session_state:
-
-        comparison = st.session_state.latest_comparison
-
-        st.success("Comparison generated successfully!")
-        st.write(comparison["content"])
-
-        st.info(
-            "⚠️ Important: Download comparison results to keep a permanent copy."
-        )
+        st.write(cmp["content"])
 
         col1, col2 = st.columns(2)
 
         with col1:
             if st.button("💾 Save Comparison"):
-                path = save_comparison(
-                    comparison["content"],
-                    comparison["country1"],
-                    comparison["country2"]
-                )
+                path = save_comparison(cmp["content"], cmp["c1"], cmp["c2"])
                 st.success(f"Saved successfully at: {path}")
 
         with col2:
             st.download_button(
-                "⬇ Download Comparison",
-                comparison["content"],
-                file_name=f"{comparison['country1']}_vs_{comparison['country2']}.txt",
+                "⬇ Download",
+                cmp["content"],
+                file_name=f"{cmp['c1']}_vs_{cmp['c2']}.txt",
                 mime="text/plain"
             )
+
+
+# =====================================================
+# SAVED FILES (SERVER VIEWER)
+# =====================================================
+
+elif option == "Saved Files":
+
+    st.warning(
+        "⚠️ Important: Files saved here are stored on the server. "
+        "They may be lost if the app restarts or redeploys. "
+        "Always download important files to your device."
+    )
+
+    show_files("saved_guides", "📘 Saved Guides")
+    show_files("saved_checklist", "🧳 Saved Checklists")
+    show_files("saved_comparisons", "⚖️ Saved Comparisons")
