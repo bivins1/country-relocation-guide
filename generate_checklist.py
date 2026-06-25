@@ -120,7 +120,12 @@ def travel_checklist(country_name, travel_type):
             contents=prompt
         )
 
-        return response.text or ""
+        if not response.text:
+            raise RuntimeError(
+                "Gemini returned an empty response."
+            )
+
+        return response.text
 
     except Exception as e:
-        return f"Error generating checklist: {e}"
+            raise RuntimeError(f"Error generating the guide: {e}") from e

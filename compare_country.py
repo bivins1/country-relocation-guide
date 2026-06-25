@@ -87,12 +87,15 @@ def compare_countries(country1_name, country2_name):
     country2 = fetch_country(country2_name)
 
     if not country1 or not country2:
-        return "One or both countries are invalid."
+        raise ValueError("One or both countries are invalid.")
 
     try:
         client = initialize_gemini()
+
     except Exception as e:
-        return f"Failed to initialize AI: {e}"
+        raise RuntimeError(
+            f"Failed to initialize AI: {e}"
+        ) from e
 
     prompt = f"""
     Compare these two countries:
@@ -117,12 +120,21 @@ def compare_countries(country1_name, country2_name):
     """
 
     try:
+
         response = client.models.generate_content(
             model="gemini-3.5-flash",
             contents=prompt
         )
 
-        return response.text or ""
+        if not response.text:
+            raise RuntimeError(
+                "Gemini returned an empty response."
+            )
+
+        return response.text
 
     except Exception as e:
-        return f"Error generating comparison: {e}"
+
+        raise RuntimeError(
+            f"Error generating comparison: {e}"
+        ) from e
