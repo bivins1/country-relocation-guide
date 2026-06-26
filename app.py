@@ -272,6 +272,8 @@ elif option == "Travel Checklist":
                 )
 
             except Exception as e:
+                if "checklist" in st.session_state:
+                     del st.session_state.checklist
 
                 st.error(e)
 
@@ -366,7 +368,8 @@ elif option == "Compare Countries":
                 )
 
             except Exception as e:
-
+                if "compare" in st.session_state:
+                    del st.session_state.compare
                 st.error(e)
 
     if "compare" in st.session_state:
